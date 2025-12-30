@@ -5,31 +5,31 @@ export default function Home() {
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
 
-  async function submit() {
-    setError("");
-    setUrl("");
+async function submit() {
+  setUrl("");
+  setError("");
 
-    try {
-      const res = await fetch("/api/pastes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content }),
-      });
+  try {
+    const res = await fetch("/api/pastes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      // ✅ Handle backend errors properly
-      if (!res.ok) {
-        setError(data.error || "Invalid input");
-        return;
-      }
-
-      setUrl(data.url);
-      setContent("");
-    } catch {
-      setError("Network error. Please try again.");
+    if (!res.ok) {
+      // 👇 THIS is what shows "Invalid content"
+      setError(data.error || "Invalid input");
+      return;
     }
+
+    setUrl(data.url);
+    setContent("");
+  } catch {
+    setError("Network error. Please try again.");
   }
+}
 
   return (
     <main className="container">
