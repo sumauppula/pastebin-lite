@@ -3,16 +3,32 @@ import { useState } from "react";
 export default function Home() {
   const [content, setContent] = useState("");
   const [url, setUrl] = useState("");
+  const [error, setError] = useState("");
 
   async function submit() {
-    const res = await fetch("/api/pastes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content }),
-    });
+    setError("");
+    setUrl("");
 
-    const data = await res.json();
-    setUrl(data.url);
+    try {
+      const res = await fetch("/api/pastes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+
+      const data = await res.json();
+
+      // ✅ Handle backend errors properly
+      if (!res.ok) {
+        setError(data.error || "Invalid input");
+        return;
+      }
+
+      setUrl(data.url);
+      setContent("");
+    } catch {
+      setError("Network error. Please try again.");
+    }
   }
 
   return (
@@ -30,6 +46,9 @@ export default function Home() {
         <button className="button" onClick={submit}>
           Create Paste
         </button>
+
+        {/* ✅ Clear error display */}
+        {error && <p className="error">{error}</p>}
 
         {url && (
           <div className="share-box">

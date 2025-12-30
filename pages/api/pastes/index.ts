@@ -43,7 +43,7 @@ export default async function handler(
     views: 0,
   };
 
-  // ✅ Upstash-compatible SET
+  // Store in Redis (with TTL if provided)
   if (ttl_seconds) {
     await redis.set(`paste:${id}`, paste, {
       px: ttl_seconds * 1000,

@@ -14,7 +14,6 @@ export default async function handler(
   const key = `paste:${id}`;
 
   const paste = await redis.get<any>(key);
-
   if (!paste) {
     return res.status(404).json({ error: "Not found" });
   }
